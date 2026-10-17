@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 9dfe7d13bebfe82479c7c764cf3c6619
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - copasTexture: {fileID: 6192944022281365145, guid: eb290fb2c70b9c6498cb578b1fb26774, type: 3}
+  - espadasTexture: {fileID: 6192944022281365145, guid: d200edadccc2f6b4ebd78da207e92d11, type: 3}
+  - pausTexture: {fileID: 6192944022281365145, guid: 51a622e35bf06a449a38f028b49db845, type: 3}
+  - ourosTexture: {fileID: 6192944022281365145, guid: a6da6271e21635140b4484314dedec68, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
