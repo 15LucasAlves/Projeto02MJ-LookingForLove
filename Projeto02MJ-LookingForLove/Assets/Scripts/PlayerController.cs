@@ -14,14 +14,14 @@ namespace CardGame
         public string lookDirectionParam = "LookDirection"; // 0: Idle, 1: Cima, 2: Baixo, 3: Esquerda, 4: Direita
         public string correctTrigger = "Win";
         public string wrongTrigger = "Lose";
+        public string idleStateName = "Idle"; // Nome do estado Idle no Animator
 
-        private bool hasChosen = false;
+        private bool isLocked = false; // Bloqueia o input apenas durante o resultado da ronda
 
         private void Update()
         {
-            if (hasChosen) return;
+            if (isLocked) return;
 
-            // Jogador 1: WASD (0: Cima/W, 1: Baixo/S, 2: Esquerda/A, 3: Direita/D)
             if (playerId == 1)
             {
                 if (Input.GetKeyDown(KeyCode.W)) SubmitDirection(0);
@@ -29,7 +29,6 @@ namespace CardGame
                 else if (Input.GetKeyDown(KeyCode.A)) SubmitDirection(2);
                 else if (Input.GetKeyDown(KeyCode.D)) SubmitDirection(3);
             }
-            // Jogador 2: JKIL (0: Cima/I, 1: Baixo/K, 2: Esquerda/J, 3: Direita/L)
             else if (playerId == 2)
             {
                 if (Input.GetKeyDown(KeyCode.I)) SubmitDirection(0);
@@ -41,8 +40,7 @@ namespace CardGame
 
         private void SubmitDirection(int dirIndex)
         {
-            if (hasChosen) return;
-            hasChosen = true;
+            if (isLocked) return;
 
             OnDirectionChosen(dirIndex);
 
@@ -62,6 +60,8 @@ namespace CardGame
 
         public void TriggerResultAnimation(bool isCorrect)
         {
+            isLocked = true; // Bloqueia novos inputs enquanto mostra a animação de resultado
+
             if (playerAnimator != null)
             {
                 if (isCorrect)
@@ -73,10 +73,19 @@ namespace CardGame
 
         public void ResetRoundState()
         {
-            hasChosen = false;
+            isLocked = false;
+
             if (playerAnimator != null)
             {
-                playerAnimator.SetInteger(lookDirectionParam, 0); // Volta ao Idle
+                // Limpa as Triggers de vitória/derrota
+                playerAnimator.ResetTrigger(correctTrigger);
+                playerAnimator.ResetTrigger(wrongTrigger);
+
+                // Força o parâmetro para 0 (Idle)
+                playerAnimator.SetInteger(lookDirectionParam, 0);
+
+                // Força a transição direta para o estado Idle no Animator
+                playerAnimator.Play(idleStateName, 0, 0f);
             }
         }
     }

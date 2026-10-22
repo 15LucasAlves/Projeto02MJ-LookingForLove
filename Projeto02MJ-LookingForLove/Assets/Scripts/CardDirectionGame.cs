@@ -12,6 +12,7 @@ public class CardDirectionGame : MonoBehaviour
     public TextMeshProUGUI timerText;
     public TextMeshProUGUI roundText;
     public float roundDuration = 5.0f;
+    public float roundInterval = 1.5f;
 
     [Header("UI - Painel de Fim de Jogo")]
     public GameObject gameOverPanel;
@@ -107,10 +108,12 @@ public class CardDirectionGame : MonoBehaviour
         if (!isRoundActive) return;
 
         timer -= Time.deltaTime;
-        if (timerText != null)
-            timerText.text = Mathf.CeilToInt(Mathf.Max(0, timer)).ToString();
 
-        if ((p1Answered && p2Answered) || timer <= 0)
+        if (timerText != null)
+            timerText.text = Mathf.Max(0, timer).ToString("F2");
+
+        // A ronda AGORA só termina quando o temporizador chega a 0
+        if (timer <= 0)
         {
             StartCoroutine(EvaluateRound());
         }
@@ -154,14 +157,15 @@ public class CardDirectionGame : MonoBehaviour
     {
         if (!isRoundActive) return;
 
-        if (playerId == 1 && !p1Answered)
+        // Permite alterar a escolha até ao fim do tempo da ronda
+        if (playerId == 1)
         {
             p1Answered = true;
             p1Choice = directionIndex;
-            p1ResponseTime = roundDuration - timer;
+            p1ResponseTime = roundDuration - timer; // Regista o tempo da escolha mais recente
             if (player1 != null) player1.OnDirectionChosen(directionIndex);
         }
-        else if (playerId == 2 && !p2Answered)
+        else if (playerId == 2)
         {
             p2Answered = true;
             p2Choice = directionIndex;
@@ -203,6 +207,8 @@ public class CardDirectionGame : MonoBehaviour
         }
 
         yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(roundInterval);
+
         StartNewRound();
     }
 
